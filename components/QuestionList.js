@@ -16,7 +16,6 @@ import {
     DebugInstructions,
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-// import console = require('console');
 
 const QuestionView = (props) => {
 const [answer, setAnswer] = useState('');
