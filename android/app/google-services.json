@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1002997136781",
+    "firebase_url": "https://paathsala-3a431.firebaseio.com",
+    "project_id": "paathsala-3a431",
+    "storage_bucket": "paathsala-3a431.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002997136781:android:68ee4a00e30a1c25",
+        "android_client_info": {
+          "package_name": "com.Paathsala"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1002997136781-nsvt9he4orct3oppvnt4kbdkouqgpc5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmrwsRAKjQD-UyhQM7jkLKB0Duc7MiA1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1002997136781-nsvt9he4orct3oppvnt4kbdkouqgpc5f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
