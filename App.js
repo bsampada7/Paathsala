@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useEffect } from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import CardList from './components/CardList';
 import QuestionList from './components/QuestionList';
@@ -27,22 +27,20 @@ import firebase from 'react-native-firebase';
 // }).catch(function(error) {
 //     console.log("Error getting document:", error);
 // });
-var db = firebase.firestore();
-console.log(db.collection('Classes'));
-var docRef = db.collection("Classes").doc("Class1");
 
-docRef.get().then(function(doc) {
-  console.log("inside then");
-    if (doc.exists) {
-        console.log("Document data:", doc.data());
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-    }
-}).catch(function(error) {
-    console.log("Error getting document:", error);
-});
-console.log("after get");
+
+// docRef.get().then(function(doc) {
+//   console.log("inside then");
+//     if (doc.exists) {
+//         console.log("Document data:", doc.data());
+//     } else {
+//         // doc.data() will be undefined in this case
+//         console.log("No such document!");
+//     }
+// }).catch(function(error) {
+//     console.log("Error getting document:", error);
+// });
+// console.log("after get");
 
 
 // db.collection('Classes').get()
@@ -67,29 +65,49 @@ const RootStack = createStackNavigator(
 
 const AppContainer = createAppContainer(RootStack);
 
-class App extends React.Component{
+const App = () => {
+  const db = firebase.firestore();
 
-
-  render(){
+useEffect(() => {
+  db.collection('Classes').get()
+  .then(snapshot => {
+    snapshot
+      .docs
+      .forEach(doc => {
+        console.log(doc._data,typeof(doc._data));
+        // console.log(JSON.parse(doc._data.toString()))
+      });
+  });
+  return () => {
+  };
+}, [])
   return (
     <AppContainer />
   );
-  }
-
-  componentDidMount(){
-    docRef.get().then(function(doc) {
-      console.log("inside then");
-        if (doc.exists) {
-            console.log("Document data:", doc.data());
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
-    console.log("after get");
-  
-  }
 }
+// class App extends React.Component{
+
+
+//   render(){
+//   return (
+//     <AppContainer />
+//   );
+//   }
+
+//   componentDidMount(){
+//     db.collection('Classes').get()
+//   .then(snapshot => {
+//     console.log(snapshot);
+//     snapshot
+//       .docs
+//       .forEach(doc => {
+//         console.log("json");
+//         console.log(doc._data,typeof(doc._data));
+//         console.log(doc._data.Total);
+//         // console.log(JSON.parse(doc._data.toString()))
+//       });
+//   });
+  
+//   }
+// }
 export default App;

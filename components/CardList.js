@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -30,6 +30,29 @@ const Card = (props) => {
 
 };
 const CardList = (props) => {
+    const [classes, setClasses] = useState([]);
+    var db = firebase.firestore();
+    useEffect(() => {
+        let tempClassArray = [];
+        db.collection('Levels').get()
+            .then(snapshot => {
+                snapshot
+                    .docs
+                    .forEach(doc => {
+                        tempClassArray.push(doc._data);
+                        setClasses(tempClassArray);
+                    });
+            });
+
+        return () => {
+        };
+    }, []);
+    useEffect(() => {
+        console.log(classes);
+        return () => {
+        };
+    }, [classes])
+    let classes1 = { Title: 'Class One', Id: "Class1" };
     return (
         <Fragment>
             <StatusBar barStyle="dark-content" />
@@ -38,11 +61,8 @@ const CardList = (props) => {
                     contentInsetAdjustmentBehavior="automatic"
                     style={styles.scrollView}>
                     <View style={styles.body}>
-                        <Card header="Class One" navigation={props.navigation} />
-                        <Card header="Class Two" navigation={props.navigation} />
-                        <Card header="Class Three" navigation={props.navigation} />
-                        <Card header="Class Four" navigation={props.navigation} />
-                        <Card header="Class Five" navigation={props.navigation} />
+                        {/* { classes1.map( (class, i) => <Card header={class.Title} id = {class.Id} navigation={props.navigation} /> )} */}
+                        <Card header={classes1.Title} id={classes1.Id} navigation={props.navigation} />
                     </View>
                 </ScrollView>
             </SafeAreaView>
