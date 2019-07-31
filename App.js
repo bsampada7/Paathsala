@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import CardList from './components/CardList';
 import QuestionList from './components/QuestionList';
-// import firebase from 'react-native-firebase';
+import firebase from 'react-native-firebase';
 
 // const AppNavigator = StackNavigator({
 //     CardListScreen: { screen: CardList },
@@ -27,21 +27,49 @@ import QuestionList from './components/QuestionList';
 // }).catch(function(error) {
 //     console.log("Error getting document:", error);
 // });
-const RootStack = createStackNavigator(
-    {
-      ClassCard: CardList,
-      QuestionListUI: QuestionList,
-    },
-    {
-      initialRouteName: 'ClassCard',
+var db = firebase.firestore();
+console.log(db.collection('Classes'));
+var docRef = db.collection("Classes").doc("Class1");
+
+docRef.get().then(function(doc) {
+  console.log("inside then");
+    if (doc.exists) {
+        console.log("Document data:", doc.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
     }
-  );
-  
-  const AppContainer = createAppContainer(RootStack);
+}).catch(function(error) {
+    console.log("Error getting document:", error);
+});
+console.log("after get");
+
+
+// db.collection('Classes').get()
+//   .then(snapshot => {
+//     console.log(snapshot);
+//     snapshot
+//       .docs
+//       .forEach(doc => {
+//         console.log("json");
+//         console.log(JSON.parse(doc._document.data.toString()))
+//       });
+//   });
+const RootStack = createStackNavigator(
+  {
+    ClassCard: CardList,
+    QuestionListUI: QuestionList,
+  },
+  {
+    initialRouteName: 'ClassCard',
+  }
+);
+
+const AppContainer = createAppContainer(RootStack);
 
 const App = () => {
-    return (
-        <AppContainer/>
-    );
+  return (
+    <AppContainer />
+  );
 }
 export default App;

@@ -8,7 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
 } from 'react-native';
-
+import firebase from 'react-native-firebase';
 import {
     Header,
     LearnMoreLinks,
@@ -22,7 +22,7 @@ const Card = (props) => {
         <TouchableOpacity style={styles.sectionContainer} onPress={() => props.navigation.navigate('QuestionListUI')}>
             <Text style={styles.sectionTitle}>{props.header}</Text>
             <Text style={styles.sectionDescription}>
-                {props.description}
+                10 Questions
             </Text>
         </TouchableOpacity>
 
@@ -38,11 +38,11 @@ const CardList = (props) => {
                     contentInsetAdjustmentBehavior="automatic"
                     style={styles.scrollView}>
                     <View style={styles.body}>
-                        <Card header="Class One" description = "10 Questions" navigation={props.navigation}/>
-                        <Card header="Class Two" description = "10 Questions" navigation={props.navigation}/>
-                        <Card header="Class Three" description = "10 Questions" navigation={props.navigation}/>
-                        <Card header="Class Four" description = "10 Questions" navigation={props.navigation}/>
-                        <Card header="Class Five" description = "10 Questions" navigation={props.navigation}/>
+                        <Card header="Class One" navigation={props.navigation} />
+                        <Card header="Class Two" navigation={props.navigation} />
+                        <Card header="Class Three" navigation={props.navigation} />
+                        <Card header="Class Four" navigation={props.navigation} />
+                        <Card header="Class Five" navigation={props.navigation} />
                     </View>
                 </ScrollView>
             </SafeAreaView>
@@ -56,26 +56,26 @@ const styles = StyleSheet.create({
     },
     body: {
         backgroundColor: Colors.white,
-        flex:1,
-        flexDirection:'row',
-        flexWrap:'wrap',
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         // alignContent:'space-around',
     },
     sectionContainer: {
         margin: 15,
-        marginTop:30,
+        marginTop: 30,
         paddingHorizontal: 24,
-        width:160,
-        paddingVertical:20,
-        height:160,
-        backgroundColor:'#45a3e6',
-        borderRadius:16,
+        width: 160,
+        paddingVertical: 20,
+        height: 160,
+        backgroundColor: '#45a3e6',
+        borderRadius: 16,
     },
     sectionTitle: {
         fontSize: 24,
         fontWeight: '600',
         color: Colors.white,
-        textAlign:"center",
+        textAlign: "center",
 
     },
     sectionDescription: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '400',
         color: Colors.white,
-        textAlign:"center",
+        textAlign: "center",
 
     },
     highlight: {
