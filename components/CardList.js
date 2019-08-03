@@ -7,17 +7,20 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  Button,
-  Image
+  Image,
+  RefreshControl
 } from 'react-native'
 import firebase from 'react-native-firebase'
 import {
-  Header,
   LearnMoreLinks,
   Colors,
   DebugInstructions,
   ReloadInstructions
 } from 'react-native/Libraries/NewAppScreen'
+import {Header, Left, Body,Button,Title,Drawer} from 'native-base';
+import Icon from 'react-native-vector-icons/Feather'
+import DrawerContent from './DrawerContent';
+
 
 const Card = props => {
   return (
@@ -25,7 +28,8 @@ const Card = props => {
       style={styles.card}
       onPress={() =>
         props.navigation.navigate('QuestionListUI', {
-          classID: props.id
+          classID: props.id,
+          nav_name:props.header
         })
       }
     >
@@ -35,10 +39,9 @@ const Card = props => {
   )
 }
 const CardList = props => {
-  const [classes, setClasses] = useState();
-  const [isloading, setisloading] = useState(true)
-  // const [state, setstate] = useState(initialState)
-  var db = firebase.firestore();
+  const [classes, setClasses] = useState({})
+  const [isLoading, setisLoading] = useState(true)
+  var db = firebase.firestore()
 
   const imgsrc = [
     require('./../res/classone.jpg'),
@@ -46,35 +49,67 @@ const CardList = props => {
     require('./../res/classthree.jpg'),
     require('./../res/classfour.jpg'),
     require('./../res/classfive.jpg')
-  ];
+  ]
 
-  useEffect(() => {
+  const getData = () => {
+    setisLoading(true)
     let tempClassArray = []
     db.collection('Levels')
       .orderBy('Order')
       .get()
       .then(snapshot => {
+        setisLoading(false)
+
         snapshot.docs.forEach(doc => {
           tempClassArray.push(doc._data)
-        });
-        setisloading(false);
-        setClasses({ ...tempClassArray })
+          setClasses({ ...tempClassArray })
+        })
       })
+      .catch(error => {
+        setClasses(null);
+      })
+  }
 
+  useEffect(() => {
+    getData();
+    openDrawer()
     return () => {}
   }, [])
 
+  const closeDrawer= () => {
+    this.drawer._root.close()
+  };
+  const openDrawer= () => { this.drawer._root.open() };
+
   return (
     <Fragment>
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
+      <Drawer ref={(ref) => { this.drawer = ref; }}  content={<DrawerContent/>}
+       onClose={() => closeDrawer}
+       >
+      <Header>
+          <Left>
+            <Button transparent onPress={()=>{
+              openDrawer()
+            }}>
+              <Icon name='menu' />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Paathshala</Title>
+          </Body>
+          
+        </Header>
         <ScrollView
           contentInsetAdjustmentBehavior='automatic'
           style={styles.scrollView}
-          refreshControl = {
-            <RefreshControl refreshing = />
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={getData} />
           }
         >
           <View style={styles.body}>
+            {/* <Text>{JSON.stringify(classes)}</Text> */}
+            {classes==null && <Text  style={styles.internetAlert}>No Internet Connection</Text>}
             {classes &&
               Object.keys(classes).map(key => (
                 <Card
@@ -82,11 +117,12 @@ const CardList = props => {
                   header={classes[key].Title}
                   id={classes[key].Id}
                   navigation={props.navigation}
-                  imgsrc = {imgsrc[key]}
+                  imgsrc={imgsrc[key]}
                 />
               ))}
           </View>
         </ScrollView>
+        </Drawer>
       </SafeAreaView>
     </Fragment>
   )
@@ -94,7 +130,8 @@ const CardList = props => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: Colors.lighter
+    backgroundColor: "#000",
+    flex:1,
   },
   body: {
     backgroundColor: Colors.white,
@@ -145,6 +182,9 @@ const styles = StyleSheet.create({
   image: {
     height: 100,
     width: 110
+  },
+  internetAlert: {
+    textAlign: "center",
   }
 })
 

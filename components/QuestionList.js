@@ -8,8 +8,12 @@ import {
   TextInput,
   StatusBar,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl,
+  KeyboardAvoidingView
 } from 'react-native'
+
+import {Badge} from 'native-base';
 
 import {
   Header,
@@ -47,6 +51,9 @@ const QuestionView = props => {
           onChangeText={text => {
             handleAnswerInput(text)
           }}
+          onSubmitEditing ={event => {
+            handleAnswerSubmit()
+          }}
           value={answerInput}
           placeholder ="Type your answer here"
         />
@@ -68,49 +75,71 @@ const QuestionView = props => {
           )}
         </TouchableOpacity>
       </View>
-      {!istyping && (
-        <TouchableOpacity style={styles.showBtn} onPress={handleShowAnswer}>
+      <View>
+        {!istyping && 
+      <TouchableOpacity onPress={handleShowAnswer}>
+      <Badge info>
           <Text style={styles.showBtnText}>
             {' '}
             {(showAnswer ? 'Hide ' : 'Show ') +
               (correctAns ? 'Explaination' : 'Answer')}
           </Text>
-        </TouchableOpacity>
-      )}
+          </Badge>
+          </TouchableOpacity>}
       {showAnswer && <Text> {props.answer}</Text>}
+      </View>
     </View>
   )
 }
 const QuestionList = props => {
   const [questions, setQuestions] = useState()
+  const [isLoading, setisLoading] = useState(true)
+
   const {navigation}=props;
   let classID=navigation.state.params&&navigation.state.params.classID;
   console.log("CLASS ID",classID)
 
   var db = firebase.firestore()
-  useEffect(() => {
+  const getData = () => {
+    setisLoading(true)
     let tempArray = []
     db.collection('Classes')
     .where('ClassId','==',classID)
-      .orderBy('Order')
+      // .orderBy('Order')
       .get()
       .then(snapshot => {
+        console.log("got snapshot")
+    setisLoading(false)
         snapshot.docs.forEach(doc => {
-          console.log(tempArray)
           tempArray.push(doc._data)
-          setQuestions({ ...tempArray })
+          
         })
+        console.log(tempArray)
+
+        let newtemp=tempArray.sort((a,b)=>{return a.Order-b.Order});
+        console.log(newtemp,tempArray)
+        setQuestions({ ...newtemp })
+
+      }).catch((error)=>{
+        console.log("error cought",error)
       })
 
+  }
+  useEffect(() => {
+    
+    getData();
     return () => {}
   }, [])
   return (
     <Fragment>
-      <StatusBar barStyle='dark-content' />
-      <SafeAreaView>
+      <KeyboardAvoidingView behavior='height' enabled style={{flex:1}}>
+      <SafeAreaView style={{flex:1}}>
         <ScrollView
           contentInsetAdjustmentBehavior='automatic'
           style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={getData} />
+          }
         >
           {/* <View style={styles.body}> */}
             {questions &&
@@ -124,13 +153,15 @@ const QuestionList = props => {
           {/* </View> */}
         </ScrollView>
       </SafeAreaView>
+      </KeyboardAvoidingView>
     </Fragment>
   )
 }
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: Colors.lighter
+    backgroundColor: Colors.lighter,
+    flex:1,
   },
   body: {
     backgroundColor: Colors.white

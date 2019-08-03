@@ -25,19 +25,8 @@ const App = () => {
   }
 
   return (
-    <MenuDrawer
-      open={open}
-      drawerContent={DrawerContentParameter}
-      drawerPercentage={50}
-      animationTime={100}
-      overlay = {true}
-      opacity={0.5}
-    >
-           <TouchableOpacity onPress = {() => {setOpen(!open)}}>
-                    <Text>Toggling drawer</Text>
-                    </TouchableOpacity>
+   
       <Router/>
-    </MenuDrawer>
   )
 }
 

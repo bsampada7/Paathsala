@@ -29,19 +29,18 @@ const Router = (props) => {
     {
       ClassCard: {
         screen: CardList,
-        navigationOptions: {
-          title: 'Paathsala',
-          headerLeft: (
-          <TouchableOpacity >
-            <Icon style={styles.menuIcon} name='menu' color='#E8EEEE' size={24} />
-            </TouchableOpacity>
-          )
+        navigationOptions:{
+          header: null,
         }
       },
       QuestionListUI: {
         screen: QuestionList,
-        navigationOptions: {
-          title: 'Class One'
+        navigationOptions: ({ navigation }) => {
+          let params=navigation.state.params ||{};
+
+          return {
+            title: params.nav_name||"N/A"
+          }
         }
       }
     },
