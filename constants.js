@@ -1,0 +1,1 @@
+export const submitArrow = "./res/submitAnswer.svg";

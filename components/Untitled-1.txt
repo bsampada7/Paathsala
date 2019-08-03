@@ -1,0 +1,159 @@
+import React, { Fragment,useState, useEffect } from 'react';
+import {
+    SafeAreaView,
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    TextInput,
+    StatusBar,
+    Image,
+} from 'react-native';
+
+import {
+    Header,
+    LearnMoreLinks,
+    Colors,
+    DebugInstructions,
+    ReloadInstructions,
+    TouchableOpacity,
+} from 'react-native/Libraries/NewAppScreen';
+import Icon from "react-native-vector-icons/AntDesign";
+import firebase from 'react-native-firebase';
+
+const QuestionView = (props) => {
+const [answerInput, setAnswerInput] = useState('');
+// const [istyping, setIstyping] = useState(true);
+// const [correctAns, setCorrectAns] = useState(false);
+
+// const handleAnswerSubmit = () => {
+//     setIstyping(false);
+// //  (props.answer == answerInput)?setCorrectAns(true):setCorrectAns(false);
+// }
+    return (
+        <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>{props.question}</Text>
+            <View style={styles.inputFieldView}>
+            <TextInput
+                style={styles.answerField}
+                onChangeText={(text) => {setAnswerInput(text)}}
+                value={answerInput}
+            />
+             <TouchableOpacity >  
+             <Icon style={styles.submitIcon} name="arrowright"  color="#E8EEEE"  size={16}/>
+
+{/* 
+             {istyping ? 
+             <Icon style={styles.submitIcon} name="arrowright"  color="#E8EEEE"  size={16}/> :
+             <Icon style={styles.submitIcon} name={correctAns?"smileo":"frowno"}  color="#E8EEEE"  size={16}/>
+              } */}
+             </TouchableOpacity>
+            </View>
+        </View>
+
+    );
+
+};
+const QuestionList = (props) => {
+     const [questions, setQuestions] = useState();
+    var db = firebase.firestore();
+    useEffect(() => {
+        let tempArray = [];
+        db.collection('Classes').orderBy('Order').get()
+            .then(snapshot => {
+                snapshot
+                    .docs
+                    .forEach(doc => {
+                        console.log(tempArray);
+                        tempArray.push(doc._data);
+                        setQuestions({...tempArray});
+                    });
+            });
+
+        return () => {
+        };
+    }, []);
+    return (
+        <Fragment>
+            <StatusBar barStyle="dark-content" />
+            <SafeAreaView>
+                <ScrollView
+                    contentInsetAdjustmentBehavior="automatic"
+                    style={styles.scrollView}>
+                    <View style={styles.body}>
+                        {questions && Object.keys(questions).map( (key) => <QuestionView key={key} question={questions[key].Question} answer={questions[key].Answer} /> )}
+
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </Fragment>
+    );
+};
+
+const styles = StyleSheet.create({
+    scrollView: {
+        backgroundColor: Colors.lighter,
+    },
+    body: {
+        backgroundColor: Colors.white,
+        // alignContent:'space-around',
+    },
+    sectionContainer: {
+        margin: 15,
+        paddingHorizontal: 24,
+        paddingVertical: 20,
+        backgroundColor: '#45a3e6',
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: '600',
+        color: Colors.white,
+        textAlign: "center",
+
+    },
+    sectionDescription: {
+        marginTop: 8,
+        fontSize: 18,
+        fontWeight: '400',
+        color: Colors.white,
+        textAlign: "center",
+
+    },
+    answerField:{
+        height: 45, 
+        borderColor: 'gray', 
+        borderWidth: 1,
+        backgroundColor:Colors.white,
+        flex: 1,
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        paddingLeft: 0,
+        borderRightWidth: 0,
+        borderWidth: 0,
+        color: '#424242',
+     },
+    highlight: {
+        fontWeight: '700',
+    },
+    footer: {
+        color: Colors.dark,
+        fontSize: 12,
+        fontWeight: '600',
+        padding: 4,
+        paddingRight: 12,
+        textAlign: 'right',
+    },
+  inputFieldView: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+},
+submitIcon: {
+    padding: 10,
+},
+});
+
+export default QuestionList;
