@@ -62,7 +62,7 @@ const QuestionView = props => {
             <Icon
               style={styles.submitIcon}
               name='arrow-right'
-              color='#E8EEEE'
+              color='#CCC'
               size={16}
             />
           ) : (
@@ -77,8 +77,8 @@ const QuestionView = props => {
       </View>
       <View>
         {!istyping && 
-      <TouchableOpacity onPress={handleShowAnswer}>
-      <Badge info>
+      <TouchableOpacity style ={styles.answerBtn} onPress={handleShowAnswer}>
+      <Badge info style ={styles.badge}>
           <Text style={styles.showBtnText}>
             {' '}
             {(showAnswer ? 'Hide ' : 'Show ') +
@@ -86,7 +86,7 @@ const QuestionView = props => {
           </Text>
           </Badge>
           </TouchableOpacity>}
-      {showAnswer && <Text> {props.answer}</Text>}
+      {showAnswer && <Text style={styles.answerText}> {props.answer}</Text>}
       </View>
     </View>
   )
@@ -236,7 +236,16 @@ const styles = StyleSheet.create({
   },
   showBtnText: {
     color: '#FFF',
-    fontSize: 16
+    fontSize: 16,
+    // padding:8,
+  },
+  answerBtn:{
+    marginTop:10,
+  },
+  answerText:{
+    color:'#FFF',
+    padding:10,
+    paddingBottom:0,
   }
 })
 

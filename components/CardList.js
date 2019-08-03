@@ -17,10 +17,9 @@ import {
   DebugInstructions,
   ReloadInstructions
 } from 'react-native/Libraries/NewAppScreen'
-import {Header, Left, Body,Button,Title,Drawer} from 'native-base';
+import { Header, Left, Body, Button, Title, Drawer } from 'native-base'
 import Icon from 'react-native-vector-icons/Feather'
-import DrawerContent from './DrawerContent';
-
+import DrawerContent from './DrawerContent'
 
 const Card = props => {
   return (
@@ -29,11 +28,13 @@ const Card = props => {
       onPress={() =>
         props.navigation.navigate('QuestionListUI', {
           classID: props.id,
-          nav_name:props.header
+          nav_name: props.header
         })
       }
     >
-      <Image style={styles.image} source={props.imgsrc} />
+      <Image style={styles.image} source={props.imgsrc}  />
+      {/* <Image style={{width:width}} source={props.imgsrc}   resizeMode="contain" /> */}
+
       <Text style={styles.sectionTitle}>{props.header}</Text>
     </TouchableOpacity>
   )
@@ -66,62 +67,77 @@ const CardList = props => {
         })
       })
       .catch(error => {
-        setClasses(null);
+        setClasses(null)
       })
   }
 
   useEffect(() => {
-    getData();
-    openDrawer()
+    getData()
+    // openDrawer()
     return () => {}
   }, [])
 
-  const closeDrawer= () => {
+  const closeDrawer = () => {
     this.drawer._root.close()
-  };
-  const openDrawer= () => { this.drawer._root.open() };
+  }
+  const openDrawer = () => {
+    this.drawer._root.open()
+  }
 
   return (
     <Fragment>
-      <SafeAreaView style={{flex:1}}>
-      <Drawer ref={(ref) => { this.drawer = ref; }}  content={<DrawerContent/>}
-       onClose={() => closeDrawer}
-       >
-      <Header>
-          <Left>
-            <Button transparent onPress={()=>{
-              openDrawer()
-            }}>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Paathshala</Title>
-          </Body>
-          
-        </Header>
-        <ScrollView
-          contentInsetAdjustmentBehavior='automatic'
-          style={styles.scrollView}
-          refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={getData} />
-          }
+      <SafeAreaView style={{ flex: 1 }}>
+        <Drawer
+          ref={ref => {
+            this.drawer = ref
+          }}
+          content={<DrawerContent navigation={props.navigation} />}
+          onClose={() => closeDrawer}
         >
-          <View style={styles.body}>
-            {/* <Text>{JSON.stringify(classes)}</Text> */}
-            {classes==null && <Text  style={styles.internetAlert}>No Internet Connection</Text>}
-            {classes &&
-              Object.keys(classes).map(key => (
-                <Card
-                  key={key}
-                  header={classes[key].Title}
-                  id={classes[key].Id}
-                  navigation={props.navigation}
-                  imgsrc={imgsrc[key]}
+          <Header style={styles.header}>
+            <Left style ={{flex:1}}> 
+              <Button 
+                transparent
+                onPress={() => {
+                  openDrawer()
+                }}
+              >
+                <Icon
+                  style={styles.menuIcon}
+                  name='menu'
+                  color='#E8EEEE'
+                  size={24}
                 />
-              ))}
-          </View>
-        </ScrollView>
+              </Button>
+            </Left>
+            <Body style={{flex:6}}>
+              <Title>Paathshala</Title>
+            </Body>
+          </Header>
+          <ScrollView
+            contentInsetAdjustmentBehavior='automatic'
+            style={styles.scrollView}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={getData} />
+            }
+          >
+            <View style={styles.body}>
+              {/* <Text>{JSON.stringify(classes)}</Text> */}
+              {classes == null && (
+                <Text style={styles.internetAlert}>No Internet Connection</Text>
+              )}
+              {classes &&
+                Object.keys(classes).map(key => (
+                  <Card
+                    key={key}
+                    header={classes[key].Title}
+                    id={classes[key].Id}
+                    navigation={props.navigation}
+                    imgsrc={imgsrc[key]}
+                  />
+                ))}
+            </View>
+          </ScrollView>
         </Drawer>
       </SafeAreaView>
     </Fragment>
@@ -130,31 +146,32 @@ const CardList = props => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: "#000",
-    flex:1,
+    backgroundColor: 'white',
+    flex: 1
   },
   body: {
     backgroundColor: Colors.white,
     flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    justifyContent:'space-around'
     // alignContent:'space-around',
   },
   card: {
-    margin: 15,
     marginTop: 30,
-    paddingHorizontal: 24,
-    width: 160,
-    paddingVertical: 20,
-    height: 160,
+    padding:24,
+    paddingBottom:16,
     backgroundColor: '#DDA0DD',
-    borderRadius: 16
+    borderRadius: 16,
+    minWidth:100,
+    maxWidth:160,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: Colors.white,
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingTop:4
   },
   sectionDescription: {
     marginTop: 8,
@@ -180,11 +197,15 @@ const styles = StyleSheet.create({
     padding: 10
   },
   image: {
-    height: 100,
-    width: 110
+    height: 110,
+    width: 110,
+    alignSelf:'center'
   },
   internetAlert: {
-    textAlign: "center",
+    textAlign: 'center'
+  },
+  header: {
+    backgroundColor: '#BA55D3'
   }
 })
 

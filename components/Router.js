@@ -2,6 +2,9 @@ import React, { Component, Fragment, useEffect } from 'react'
 import { createStackNavigator, createAppContainer } from 'react-navigation'
 import CardList from './CardList'
 import QuestionList from './QuestionList'
+import DrawerContent from './DrawerContent'
+import AboutUs from './AboutUs'
+import LoginPage from './LoginPage'
 import Icon from 'react-native-vector-icons/Feather'
 
 import {
@@ -42,10 +45,22 @@ const Router = (props) => {
             title: params.nav_name||"N/A"
           }
         }
-      }
+      },
+      AboutUsUI: {
+        screen: AboutUs,
+        navigationOptions: {
+          title : "About Us"
+        }
+      },
+      LoginPageUI: {
+        screen: LoginPage,
+        navigationOptions: {
+          header : null
+        }
+      },
     },
     {
-      initialRouteName: 'ClassCard',
+      initialRouteName: 'LoginPageUI',
       defaultNavigationOptions: {
         headerStyle: {
           backgroundColor: '#BA55D3'
