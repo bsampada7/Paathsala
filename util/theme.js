@@ -1,7 +1,9 @@
-export const BlueGray = {
-    primaryColor: 'red'
+export const FuschiaTheme = {
+    primaryColor: '#BA55D3',
+    secondaryColor: '#DDA0DD'
 }
 
-export const LightGreen = {
-  primaryColor: 'green'
+export const BlueTheme = {
+  primaryColor: 'blue',
+  secondaryColor: 'lightblue'
 }

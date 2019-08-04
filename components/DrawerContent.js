@@ -7,85 +7,112 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  Image,
-  
+  Image
 } from 'react-native'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { AppConsumer } from '../util/provider';
-import { BlueGray, LightGreen } from '../util/theme';
-import {Switch} from 'native-base';
+import { AppConsumer } from './../util/provider'
+import { FuschiaTheme, BlueTheme } from './../util/theme'
+import { Switch } from 'native-base'
+import firebase from 'react-native-firebase'
+
 
 const DrawerContent = props => {
-  const [themeColor, setthemeColor] = useState(false);
-  const changeThemeColor = () => {
-    setthemeColor(!themeColor)
+  const [themeColor, setthemeColor] = useState(false)
+
+  const handleLogOut = () => {
+    firebase.auth().signOut().then(function() {
+      console.log("Sign-out successful.")
+      props.navigation.navigate('LoginPageUI')// Sign-out successful.
+    }).catch(function(error) {
+      console.log("Sign-out error.",error)// Sign-out successful.
+      // An error happened.
+    });
   }
 
-  return (<AppConsumer>
-    {(appConsumer)=>{return <ScrollView style={{flex:1,backgroundColor:'white'}}>
-    <View style={styles.drawerContainer}>
-      <View style={styles.userDetailsContainer}>
-        <View style={styles.userImage}>
-          <Image
-            source={require('./../res/classone.jpg')}
-            style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
-          />
-          <Text style={styles.userName}>UserName</Text>
-        </View>
-      </View>
-      <View style={styles.appSettings}>
-        <TouchableOpacity
-          style={styles.drawerOptions}
-          onPress={() => this.drawer._root.close()}
-        >
-          <Text style={styles.drawerOptionsText}>Home</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.drawerOptionsIcon}>
-          <Text style={styles.themeText}>Change Theme</Text>
-          <Switch
-            style={styles.switchColor}
-            onValueChange={(value)=>{
-              console.log("VALUE IS",value);
-              setthemeColor(value)
-              appConsumer.updateTheme(value?LightGreen:BlueGray)
-            }}
-            
-            
-            value={themeColor}
-            trackColor={{ false: 'blue', true: '#BA55D3' }}
-            thumbColor='#CCC'
-          />
-   
-        </View>
+  return (
+    <AppConsumer>
+      {appConsumer => {
+        return (
+          <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={styles.drawerContainer}>
+              <View style={styles.userDetailsContainer}>
+                <View
+                  style={[
+                    styles.userImage,
+                    {
+                      backgroundColor: themeColor
+                        ? BlueTheme.primaryColor
+                        : FuschiaTheme.primaryColor
+                    }
+                  ]}
+                >
+                  <Image
+                    source={require('./../res/unknown.jpg')}
+                    style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
+                  />
+                  <Text style={styles.userName}>{props.userName}</Text>
+                </View>
+              </View>
+              <View style={styles.appSettings}>
+                <TouchableOpacity
+                  style={styles.drawerOptions}
+                  onPress={() => this.drawer._root.close()}
+                >
+                  <Text style={styles.drawerOptionsText}>Home</Text>
+                </TouchableOpacity>
 
-        <View style={styles.drawerOptionsIcon}>        
-        <TouchableOpacity
-          style={styles.drawerOptions}
-          onPress={
-            () => props.navigation.navigate('AboutUsUI')
-          }
-        >
-          <Text style={styles.drawerOptionsText}>About Us</Text>
-        </TouchableOpacity>
-          <AntIcon name='questioncircleo' color='#888' size={24} style={styles.drawerOptions} />
-        </View>
-        <View style={styles.drawerOptionsIcon}>        
-        <TouchableOpacity
-          style={styles.drawerOptions}
-          onPress={
-            () => console.log("logout")
-          }
-        >
-          <Text style={styles.drawerOptionsText}>Log Out</Text>
-        </TouchableOpacity>
-          <Icon name='logout' color='#888' size={24} style={styles.drawerOptions} />
-        </View>
-      </View>
-    </View>
-    </ScrollView>
-    }}
+                <View style={styles.drawerOptionsIcon}>
+                  <Text style={styles.themeText}>Change Theme</Text>
+                  <Switch
+                    style={styles.switchColor}
+                    onValueChange={value => {
+                      console.log('VALUE IS', value)
+                      setthemeColor(value)
+                      appConsumer.updateTheme(value ? BlueTheme : FuschiaTheme)
+                    }}
+                    value={themeColor}
+                    trackColor={{
+                      true: BlueTheme.primaryColor,
+                      false: FuschiaTheme.primaryColor
+                    }}
+                    thumbColor='#CCC'
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.drawerOptionsIcon}
+                  onPress={() => props.navigation.navigate('AboutUsUI')}
+                >
+                  <View style={styles.drawerOptions}>
+                    <Text style={styles.drawerOptionsText}>About Us</Text>
+                  </View>
+                  <AntIcon
+                    name='questioncircleo'
+                    color='#888'
+                    size={24}
+                    style={styles.drawerOptions}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.drawerOptionsIcon}
+                  onPress={handleLogOut}
+                >
+                  <View style={styles.drawerOptions}>
+                    <Text style={styles.drawerOptionsText}>Log Out</Text>
+                  </View>
+                  <Icon
+                    name='logout'
+                    color='#888'
+                    size={24}
+                    style={styles.drawerOptions}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        )
+      }}
     </AppConsumer>
   )
 }
@@ -105,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#BA55D3',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingTop:20,
+    paddingTop: 20
   },
   userInfo: {
     flex: 3,
@@ -113,7 +140,8 @@ const styles = StyleSheet.create({
   },
   userName: {
     padding: 15,
-    fontSize: 16
+    fontSize: 16,
+    color:'#FFF'
   },
   userInfoExtra: {
     flex: 1,

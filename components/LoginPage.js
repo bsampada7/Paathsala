@@ -13,25 +13,36 @@ import {
   //   Button
 } from 'react-native'
 import { Button } from 'native-base'
+import firebase from 'react-native-firebase'
 
-const SignInForm = (props) => {
-  const [username, setUsername] = useState()
+const SignInForm = props => {
+  const [email, setEmail] = useState()
   const [password, setPassword] = useState()
-  const handleUserNameInput = text => {
-    setUsername(text)
+  const [error, setError] = useState(null)
+
+  const handleEmailInput = text => {
+    setEmail(text)
   }
   const handlePasswordInput = text => {
     setPassword(text)
   }
+  const handleLogin = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => props.navigation.navigate('ClassCard'))
+      .catch(error => setError(error.message))
+  }
+
   return (
     <View>
       <View style={styles.drawerOptions}>
         <TextInput
-          value={username}
+          value={email}
           onChangeText={text => {
-            handleUserNameInput(text)
+            handleEmailInput(text)
           }}
-          placeholder={'Username'}
+          placeholder={'Email'}
           style={styles.input}
         />
       </View>
@@ -46,10 +57,11 @@ const SignInForm = (props) => {
           style={styles.input}
         />
       </View>
+      {error && <Text style={styles.errorText}>{error}</Text> }
       <Button
         primary
         style={styles.loginBtn}
-        onPress={() => props.navigation.navigate('ClassCard')}
+        onPress={handleLogin}
       >
         <Text style={styles.loginText}>Login</Text>
       </Button>
@@ -61,6 +73,7 @@ const SignUpForm = props => {
   const [username, setUsername] = useState()
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
+  const [error, setError] = useState(null)
 
   const handleUserNameInput = text => {
     setUsername(text)
@@ -70,6 +83,36 @@ const SignUpForm = props => {
   }
   const handleEmailInput = text => {
     setEmail(text)
+  }
+  const handleSignUp = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        firebase
+          .firestore()
+          .collection('Users')
+          .add({
+            Email: email,
+            UserName: username
+          })
+        var user = firebase.auth().currentUser
+        user
+          .updateProfile({
+            displayName: username
+          })
+          .then(function () {
+            console.log('successful')
+            props.navigation.navigate('ClassCard')
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      })
+      .catch(error => {
+        console.log(error.message)
+        setError(error.message)
+      })
   }
   return (
     <View>
@@ -105,11 +148,8 @@ const SignUpForm = props => {
           style={styles.input}
         />
       </View>
-      <Button
-        primary
-        style={styles.loginBtn}
-        onPress={() => props.navigation.navigate('ClassCard')}
-      >
+      {error && <Text style={styles.errorText}>{error}</Text> }
+      <Button primary style={styles.loginBtn} onPress={handleSignUp}>
         <Text style={styles.loginText}>Sign Up</Text>
       </Button>
     </View>
@@ -266,6 +306,12 @@ const styles = StyleSheet.create({
   activeSignBtn: {
     borderColor: '#DDA0DD',
     borderWidth: 2
+  },
+  errorText:{
+    color:'red',
+    alignSelf:'center',
+    marginLeft:20,
+    marginRight:20
   }
 })
 

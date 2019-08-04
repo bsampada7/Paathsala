@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView
 } from 'react-native'
 
-import {Badge} from 'native-base';
+import { Badge } from 'native-base'
 
 import {
   Header,
@@ -22,10 +22,12 @@ import {
   DebugInstructions,
   ReloadInstructions
 } from 'react-native/Libraries/NewAppScreen'
+import { withTheme } from '../util/provider'
+
 import Icon from 'react-native-vector-icons/Feather'
 import firebase from 'react-native-firebase'
 
-const QuestionView = props => {
+const QuestionViewNoTheme = props => {
   const [answerInput, setAnswerInput] = useState('')
   const [istyping, setIstyping] = useState(true)
   const [correctAns, setCorrectAns] = useState(false)
@@ -43,7 +45,14 @@ const QuestionView = props => {
     setShowAnswer(!showAnswer)
   }
   return (
-    <View style={styles.questionCard}>
+    <View
+      style={[
+        styles.questionCard,
+        {
+          backgroundColor: props.theme.secondaryColor
+        }
+      ]}
+    >
       <Text style={styles.sectionTitle}>{props.question}</Text>
       <View style={styles.inputFieldView}>
         <TextInput
@@ -51,11 +60,11 @@ const QuestionView = props => {
           onChangeText={text => {
             handleAnswerInput(text)
           }}
-          onSubmitEditing ={event => {
+          onSubmitEditing={event => {
             handleAnswerSubmit()
           }}
           value={answerInput}
-          placeholder ="Type your answer here"
+          placeholder='Type your answer here'
         />
         <TouchableOpacity onPress={handleAnswerSubmit}>
           {istyping ? (
@@ -76,72 +85,75 @@ const QuestionView = props => {
         </TouchableOpacity>
       </View>
       <View>
-        {!istyping && 
-      <TouchableOpacity style ={styles.answerBtn} onPress={handleShowAnswer}>
-      <Badge info style ={styles.badge}>
-          <Text style={styles.showBtnText}>
-            {' '}
-            {(showAnswer ? 'Hide ' : 'Show ') +
-              (correctAns ? 'Explaination' : 'Answer')}
-          </Text>
-          </Badge>
-          </TouchableOpacity>}
-      {showAnswer && <Text style={styles.answerText}> {props.answer}</Text>}
+        {!istyping && (
+          <TouchableOpacity style={styles.answerBtn} onPress={handleShowAnswer}>
+            <Badge info style={styles.badge}>
+              <Text style={styles.showBtnText}>
+                {' '}
+                {(showAnswer ? 'Hide ' : 'Show ') +
+                  (correctAns ? 'Explaination' : 'Answer')}
+              </Text>
+            </Badge>
+          </TouchableOpacity>
+        )}
+        {showAnswer && <Text style={styles.answerText}> {props.answer}</Text>}
       </View>
     </View>
   )
 }
+
+const QuestionView = withTheme(QuestionViewNoTheme)
+
 const QuestionList = props => {
   const [questions, setQuestions] = useState()
   const [isLoading, setisLoading] = useState(true)
 
-  const {navigation}=props;
-  let classID=navigation.state.params&&navigation.state.params.classID;
-  console.log("CLASS ID",classID)
+  const { navigation } = props
+  let classID = navigation.state.params && navigation.state.params.classID
+  console.log('CLASS ID', classID)
 
   var db = firebase.firestore()
   const getData = () => {
     setisLoading(true)
     let tempArray = []
     db.collection('Classes')
-    .where('ClassId','==',classID)
+      .where('ClassId', '==', classID)
       // .orderBy('Order')
       .get()
       .then(snapshot => {
-        console.log("got snapshot")
-    setisLoading(false)
+        console.log('got snapshot')
+        setisLoading(false)
         snapshot.docs.forEach(doc => {
           tempArray.push(doc._data)
-          
         })
         console.log(tempArray)
 
-        let newtemp=tempArray.sort((a,b)=>{return a.Order-b.Order});
-        console.log(newtemp,tempArray)
+        let newtemp = tempArray.sort((a, b) => {
+          return a.Order - b.Order
+        })
+        console.log(newtemp, tempArray)
         setQuestions({ ...newtemp })
-
-      }).catch((error)=>{
-        console.log("error cought",error)
       })
-
+      .catch(error => {
+        console.log('error cought', error)
+      })
   }
   useEffect(() => {
-    
-    getData();
+    getData()
     return () => {}
   }, [])
   return (
     <Fragment>
-      <KeyboardAvoidingView behavior='height' enabled style={{flex:1}}>
-      <SafeAreaView style={{flex:1}}>
-        <ScrollView
-          contentInsetAdjustmentBehavior='automatic'
-          style={styles.scrollView}
-          refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={getData} />
-          }
-        >
-          {/* <View style={styles.body}> */}
+      <KeyboardAvoidingView behavior='height' enabled style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView
+            contentInsetAdjustmentBehavior='automatic'
+            style={styles.scrollView}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={getData} />
+            }
+          >
+            {/* <View style={styles.body}> */}
             {questions &&
               Object.keys(questions).map(key => (
                 <QuestionView
@@ -150,9 +162,9 @@ const QuestionList = props => {
                   answer={questions[key].Answer}
                 />
               ))}
-          {/* </View> */}
-        </ScrollView>
-      </SafeAreaView>
+            {/* </View> */}
+          </ScrollView>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Fragment>
   )
@@ -161,7 +173,7 @@ const QuestionList = props => {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
-    flex:1,
+    flex: 1
   },
   body: {
     backgroundColor: Colors.white
@@ -200,8 +212,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     color: '#424242',
     borderRadius: 16
-
-
   },
   highlight: {
     fontWeight: '700'
@@ -236,16 +246,16 @@ const styles = StyleSheet.create({
   },
   showBtnText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 16
     // padding:8,
   },
-  answerBtn:{
-    marginTop:10,
+  answerBtn: {
+    marginTop: 10
   },
-  answerText:{
-    color:'#FFF',
-    padding:10,
-    paddingBottom:0,
+  answerText: {
+    color: '#FFF',
+    padding: 10,
+    paddingBottom: 0
   }
 })
 

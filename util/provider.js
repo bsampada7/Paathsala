@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import {View} from'react-native';
-import { BlueGray, LightGreen } from './theme'
+import { FuschiaTheme, BlueTheme } from './theme'
 
 const Context = React.createContext();
 
 export class AppContextProvider extends Component {
     state = {
-        theme: LightGreen,
+        theme: FuschiaTheme,
         updateTheme: (theme) => {
             console.log("UPDATING  THEME", theme)
             this.setState({ theme: theme })
@@ -33,7 +33,7 @@ export function withTheme(WrapperComponent){
             <Context.Consumer>
               {
                 (holder) => {
-                  // console.log("HOLDER",holder)
+                   console.log("HOLDER",holder)
                   return (
                     <WrapperComponent 
                     theme={holder.theme}

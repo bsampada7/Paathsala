@@ -20,18 +20,22 @@ import {
 import { Header, Left, Body, Button, Title, Drawer } from 'native-base'
 import Icon from 'react-native-vector-icons/Feather'
 import DrawerContent from './DrawerContent'
-import {withTheme} from'../util/provider';
+import { withTheme } from '../util/provider'
 
-const Card1=props => {
+const Card = props => {
   return (
     <TouchableOpacity
-      style={[styles.card,{
-        backgroundColor:props.theme.primaryColor
-      }]}
+      style={[
+        styles.card,
+        {
+          backgroundColor: props.theme.secondaryColor
+        }
+      ]}
       onPress={() =>
         props.navigation.navigate('QuestionListUI', {
           classID: props.id,
-          nav_name: props.header
+          nav_name: props.header,
+          header_background: props.theme.primaryColor
         })
       }
     >
@@ -43,18 +47,11 @@ const Card1=props => {
   )
 }
 
-const Card = withTheme(Card1);
-
-const CardList = props => {
-  const [classes, setClasses] = useState({
-    0:{
-      Title:"Title",
-      Key:'Key',
-      Id:"1"
-    }
-  })
+const CardList1 = props => {
+  const [classes, setClasses] = useState({})
   const [isLoading, setisLoading] = useState(true)
   var db = firebase.firestore()
+  const [userName, setUserName] = useState('UserName')
 
   const imgsrc = [
     require('./../res/classone.jpg'),
@@ -79,14 +76,36 @@ const CardList = props => {
         })
       })
       .catch(error => {
+        console.log(error)
         setClasses(null)
       })
+    let useremail = firebase.auth().currentUser._user.email
+    let userdispname = firebase.auth().currentUser._user.displayName
+      if(!userdispname){
+        db.collection('Users')
+        .where('Email', '==', useremail)
+        .get()
+        .then(snapshot => {
+          snapshot.docs.forEach(doc => {
+            setUserName(doc._data.UserName)
+          })
+        })
+        .catch(error => {
+          console.log(error)
+          setClasses(null)
+        })
+      }
+      else{
+        setUserName(userdispname);
+      }
+
   }
 
   useEffect(() => {
     getData()
+    console.log(props);
     // openDrawer()
-    return () => { }
+    return () => {}
   }, [])
 
   const closeDrawer = () => {
@@ -103,10 +122,17 @@ const CardList = props => {
           ref={ref => {
             this.drawer = ref
           }}
-          content={<DrawerContent navigation={props.navigation} />}
+          content={<DrawerContent navigation={props.navigation} userName = {userName}/>}
           onClose={() => closeDrawer}
         >
-          <Header style={styles.header}>
+          <Header
+            style={[
+              styles.header,
+              {
+                backgroundColor: props.theme.primaryColor
+              }
+            ]}
+          >
             <Left style={{ flex: 1 }}>
               <Button
                 transparent
@@ -146,6 +172,7 @@ const CardList = props => {
                     id={classes[key].Id}
                     navigation={props.navigation}
                     imgsrc={imgsrc[key]}
+                    theme={props.theme}
                   />
                 ))}
             </View>
@@ -155,6 +182,7 @@ const CardList = props => {
     </Fragment>
   )
 }
+const CardList = withTheme(CardList1)
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -176,7 +204,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDA0DD',
     borderRadius: 16,
     minWidth: 100,
-    maxWidth: 160,
+    maxWidth: 160
   },
   sectionTitle: {
     fontSize: 20,

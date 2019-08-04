@@ -5,6 +5,7 @@ import QuestionList from './QuestionList'
 import DrawerContent from './DrawerContent'
 import AboutUs from './AboutUs'
 import LoginPage from './LoginPage'
+import Loading from './Loading'
 import Icon from 'react-native-vector-icons/Feather'
 
 import {
@@ -42,7 +43,10 @@ const Router = (props) => {
           let params=navigation.state.params ||{};
 
           return {
-            title: params.nav_name||"N/A"
+            title: params.nav_name||"N/A",
+            headerStyle: {
+              backgroundColor:params.header_background
+            }
           }
         }
       },
@@ -58,9 +62,15 @@ const Router = (props) => {
           header : null
         }
       },
+      LoadingPage: {
+        screen: Loading,
+        navigationOptions: {
+          header : null
+        }
+      },
     },
     {
-      initialRouteName: 'LoginPageUI',
+      initialRouteName: 'LoadingPage',
       defaultNavigationOptions: {
         headerStyle: {
           backgroundColor: '#BA55D3'
