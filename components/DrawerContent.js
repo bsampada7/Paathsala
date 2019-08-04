@@ -8,19 +8,22 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
-  Switch
+  
 } from 'react-native'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { AppConsumer } from '../util/provider';
+import { BlueGray, LightGreen } from '../util/theme';
+import {Switch} from 'native-base';
 
 const DrawerContent = props => {
-  const [themeColor, setthemeColor] = useState(false)
+  const [themeColor, setthemeColor] = useState(false);
   const changeThemeColor = () => {
     setthemeColor(!themeColor)
   }
 
-  return (
-    <ScrollView style={{flex:1,backgroundColor:'white'}}>
+  return (<AppConsumer>
+    {(appConsumer)=>{return <ScrollView style={{flex:1,backgroundColor:'white'}}>
     <View style={styles.drawerContainer}>
       <View style={styles.userDetailsContainer}>
         <View style={styles.userImage}>
@@ -43,11 +46,18 @@ const DrawerContent = props => {
           <Text style={styles.themeText}>Change Theme</Text>
           <Switch
             style={styles.switchColor}
-            onValueChange={changeThemeColor}
+            onValueChange={(value)=>{
+              console.log("VALUE IS",value);
+              setthemeColor(value)
+              appConsumer.updateTheme(value?LightGreen:BlueGray)
+            }}
+            
+            
             value={themeColor}
             trackColor={{ false: 'blue', true: '#BA55D3' }}
             thumbColor='#CCC'
           />
+   
         </View>
 
         <View style={styles.drawerOptionsIcon}>        
@@ -75,6 +85,8 @@ const DrawerContent = props => {
       </View>
     </View>
     </ScrollView>
+    }}
+    </AppConsumer>
   )
 }
 

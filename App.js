@@ -11,6 +11,7 @@ import {
   StatusBar,
   TouchableOpacity
 } from 'react-native'
+import { AppContextProvider } from './util/provider';
 
 
 
@@ -25,8 +26,9 @@ const App = () => {
   }
 
   return (
-   
+      <AppContextProvider>
       <Router/>
+      </AppContextProvider>
   )
 }
 

@@ -20,11 +20,14 @@ import {
 import { Header, Left, Body, Button, Title, Drawer } from 'native-base'
 import Icon from 'react-native-vector-icons/Feather'
 import DrawerContent from './DrawerContent'
+import {withTheme} from'../util/provider';
 
-const Card = props => {
+const Card1=props => {
   return (
     <TouchableOpacity
-      style={styles.card}
+      style={[styles.card,{
+        backgroundColor:props.theme.primaryColor
+      }]}
       onPress={() =>
         props.navigation.navigate('QuestionListUI', {
           classID: props.id,
@@ -32,15 +35,24 @@ const Card = props => {
         })
       }
     >
-      <Image style={styles.image} source={props.imgsrc}  />
+      <Image style={styles.image} source={props.imgsrc} />
       {/* <Image style={{width:width}} source={props.imgsrc}   resizeMode="contain" /> */}
 
       <Text style={styles.sectionTitle}>{props.header}</Text>
     </TouchableOpacity>
   )
 }
+
+const Card = withTheme(Card1);
+
 const CardList = props => {
-  const [classes, setClasses] = useState({})
+  const [classes, setClasses] = useState({
+    0:{
+      Title:"Title",
+      Key:'Key',
+      Id:"1"
+    }
+  })
   const [isLoading, setisLoading] = useState(true)
   var db = firebase.firestore()
 
@@ -74,7 +86,7 @@ const CardList = props => {
   useEffect(() => {
     getData()
     // openDrawer()
-    return () => {}
+    return () => { }
   }, [])
 
   const closeDrawer = () => {
@@ -95,8 +107,8 @@ const CardList = props => {
           onClose={() => closeDrawer}
         >
           <Header style={styles.header}>
-            <Left style ={{flex:1}}> 
-              <Button 
+            <Left style={{ flex: 1 }}>
+              <Button
                 transparent
                 onPress={() => {
                   openDrawer()
@@ -110,7 +122,7 @@ const CardList = props => {
                 />
               </Button>
             </Left>
-            <Body style={{flex:6}}>
+            <Body style={{ flex: 6 }}>
               <Title>Paathshala</Title>
             </Body>
           </Header>
@@ -154,24 +166,24 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent:'space-around'
+    justifyContent: 'space-around'
     // alignContent:'space-around',
   },
   card: {
     marginTop: 30,
-    padding:24,
-    paddingBottom:16,
+    padding: 24,
+    paddingBottom: 16,
     backgroundColor: '#DDA0DD',
     borderRadius: 16,
-    minWidth:100,
-    maxWidth:160,
+    minWidth: 100,
+    maxWidth: 160,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: Colors.white,
     textAlign: 'center',
-    paddingTop:4
+    paddingTop: 4
   },
   sectionDescription: {
     marginTop: 8,
@@ -199,7 +211,7 @@ const styles = StyleSheet.create({
   image: {
     height: 110,
     width: 110,
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   internetAlert: {
     textAlign: 'center'
