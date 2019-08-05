@@ -19,6 +19,7 @@ const SignInForm = props => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [error, setError] = useState(null)
+  const [disabled, setDisabled] = useState(false);
 
   const handleEmailInput = text => {
     setEmail(text)
@@ -27,11 +28,16 @@ const SignInForm = props => {
     setPassword(text)
   }
   const handleLogin = () => {
+    setDisabled(true);
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => props.navigation.navigate('ClassCard'))
-      .catch(error => setError(error.message))
+      .catch(
+        error => {
+        setDisabled(false);
+        setError(error.message)
+        })
   }
 
   return (
@@ -61,7 +67,7 @@ const SignInForm = props => {
       <Button
         primary
         style={styles.loginBtn}
-        onPress={handleLogin}
+        onPress={!disabled && handleLogin}
       >
         <Text style={styles.loginText}>Login</Text>
       </Button>
@@ -74,6 +80,8 @@ const SignUpForm = props => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [error, setError] = useState(null)
+  const [disabled, setDisabled] = useState(false);
+
 
   const handleUserNameInput = text => {
     setUsername(text)
@@ -85,6 +93,8 @@ const SignUpForm = props => {
     setEmail(text)
   }
   const handleSignUp = () => {
+    setDisabled(true);
+
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -110,6 +120,8 @@ const SignUpForm = props => {
           })
       })
       .catch(error => {
+    setDisabled(false);
+
         console.log(error.message)
         setError(error.message)
       })
@@ -149,7 +161,7 @@ const SignUpForm = props => {
         />
       </View>
       {error && <Text style={styles.errorText}>{error}</Text> }
-      <Button primary style={styles.loginBtn} onPress={handleSignUp}>
+      <Button primary style={styles.loginBtn} onPress={!disabled && handleSignUp}>
         <Text style={styles.loginText}>Sign Up</Text>
       </Button>
     </View>

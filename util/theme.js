@@ -4,6 +4,8 @@ export const FuschiaTheme = {
 }
 
 export const BlueTheme = {
-  primaryColor: 'blue',
-  secondaryColor: 'lightblue'
+  // primaryColor: '#2b5797',
+  primaryColor: '#2d89ef',
+    // primaryColor: '#2b5797',
+  secondaryColor: '#00B9F1'
 }

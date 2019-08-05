@@ -82,7 +82,11 @@ const DrawerContent = props => {
 
                 <TouchableOpacity
                   style={styles.drawerOptionsIcon}
-                  onPress={() => props.navigation.navigate('AboutUsUI')}
+                  onPress={() => props.navigation.navigate('AboutUsUI', {
+                    header_background: themeColor
+                    ? BlueTheme.primaryColor
+                    : FuschiaTheme.primaryColor
+                  })}
                 >
                   <View style={styles.drawerOptions}>
                     <Text style={styles.drawerOptionsText}>About Us</Text>

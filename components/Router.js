@@ -52,8 +52,14 @@ const Router = (props) => {
       },
       AboutUsUI: {
         screen: AboutUs,
-        navigationOptions: {
-          title : "About Us"
+        navigationOptions: ({ navigation }) => {
+          let params=navigation.state.params ||{};
+          return {
+            title: "About Us",
+            headerStyle: {
+              backgroundColor:params.header_background
+            }
+          }
         }
       },
       LoginPageUI: {

@@ -1,19 +1,30 @@
 import React, { Component } from "react";
 import {View} from'react-native';
 import { FuschiaTheme, BlueTheme } from './theme'
+import { saveLocalData,readLocalData } from './storageutil'
+
 
 const Context = React.createContext();
 
 export class AppContextProvider extends Component {
+  
     state = {
         theme: FuschiaTheme,
         updateTheme: (theme) => {
             console.log("UPDATING  THEME", theme)
             this.setState({ theme: theme })
+            let themedata  = (theme==FuschiaTheme)?"fuschia":"blue";
+            saveLocalData("themeVal",themedata);
         }
     }
     
     render() {
+      let istheme = readLocalData("themeVal");
+      console.log(istheme);
+      if(istheme){
+        let  gotTheme = (istheme =="fuschia")?FuschiaTheme:BlueTheme;
+        // this.state.updateTheme(gotTheme);
+      } 
       console.log("props",this.props.children)
         const { theme } = this.state
         return (
